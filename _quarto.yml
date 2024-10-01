@@ -1,0 +1,26 @@
+project:
+  title: "Pl-ligof-gent"
+  output-dir: "docs"
+  render:
+    - index.qmd
+
+format:
+  ubd-revealjs:
+    transition: fade
+    auto-stretch: false
+    width: 1250  # 1050
+    height: 760  # 700
+    self-contained: false
+    chalkboard: true
+    toc: false
+    toc-depth: 1
+    multiplex: true
+    # html-table-processing: none
+    
+bibliography: refs.bib
+# csl: apa.csl
+
+execute:
+  freeze: auto
+  cache: true
+
