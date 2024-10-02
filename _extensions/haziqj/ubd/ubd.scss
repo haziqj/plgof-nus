@@ -552,6 +552,14 @@ div.quarto-figure.quarto-figure-center {
   transform: translateY(-50px);
 }
 
+.nudge-up-medium {
+  transform: translateY(-37.5px);
+}
+
+.nudge-up-mm {
+  transform: translateY(-30px);
+}
+
 .nudge-up {
   transform: translateY(-25px);
 }
@@ -562,4 +570,8 @@ div.quarto-figure.quarto-figure-center {
 
 .nudge-down {
   transform: translateY(25px);
+}
+
+.nudge-down-small {
+  transform: translateY(12.5px);
 }

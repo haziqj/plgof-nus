@@ -297,13 +297,23 @@ as $n\to\infty$. This also works for complex sampling [@fuller2009introduction],
 
 ::: {.columns}
 
-::: {.column width=36%}
+::: {.column width=34%}
+
+::: {.nudge-up-small}
+$$
+H_0: \bpi = \bpi(\btheta)
+$$
+:::
+
+::: {.nudge-up-large}
 
 ![](figures/sem_path.png)
 
 :::
 
-::: {.column width=64%}
+:::
+
+::: {.column width=66%}
 
 ::: {.absolute top=25}
 - E.g. binary factor model with underlying variable approach (s.t. constraints)
@@ -326,7 +336,7 @@ $\btheta^\top = ($[$\blambda$]{.ubdred}$,\,$[$\brho$]{.ubdteal}$,\,$[$\btau$]{.u
 $$
 \log L(\btheta \mid \cY) = \sum_{r=1}^R \hat n_r \log \pi_r(\btheta)
 $${#eq-facmod-loglik}
-where $\pi_r(\btheta) = \int \phi_p(\by^* \mid \bzero, \bLambda\bPsi\bLambda^\top + \bTheta_\epsilon) \dint \by^*$.
+where $\pi_r(\btheta) = \int_{\cC_r} \phi_p(\by^* \mid \bzero, \bLambda\bPsi\bLambda^\top + \bTheta_\epsilon) \dint \by^*$.
 :::
 
 <!-- ::: {.fragment fragment-index=2} -->
@@ -426,20 +436,20 @@ $$
 
 - For pairs of variables $y_i$ and $y_j$, $i,j=1,\dots,p$, and $i<j$, define $\hspace{5cm}$ 
 $$
-\pi_{cc'}^{(ij)}(\btheta) = \Pr_{\btheta}(y_i = c, y_i = c'), \hspace{2em} c,c'\in\{0,1\}.
+\pi_{cc'}^{(ij)}(\btheta) = \Pr_{\btheta}(y_i = c, y_j = c'), \hspace{2em} c,c'\in\{0,1\}.
 $${#eq-pairwise}
 There are $\tilde R = 4 \times \binom{p}{2}$ such probabilities, with $\sum_{c,c'} \pi_{cc'}^{(ij)}(\btheta) = 1$.
 
 ::: {.incremental .nudge-up}
 - The pairwise log-likelihood takes the form [@katsikatsou2012pairwise]
 $$
-\log \pL(\btheta \mid \cY) = \sum_{i<j} \sum_{c}\sum_{c'} \hat n_{cc'}^{(ij)} \log \pi_{y_iy_j}^{(ij)}(\btheta),
+\log \pL(\btheta \mid \cY) = \sum_{i<j} \sum_{c}\sum_{c'} \hat n_{cc'}^{(ij)} \log \pi_{cc'}^{(ij)}(\btheta),
 $${#eq-pairwise-loglik}
 where $\hat n_{cc'}^{(ij)} = \sum_h w_h [\by^{(h)}_i = c, \by^{(h)}_j = c']$.
 
 - The evaluation of @eq-pairwise-loglik now involves only bivariate normal integrals!
 $$
-\pi_{cc'}^{(ij)}(\btheta) = \iint \phi_2\big(\by^*_{ij} \mid \bzero, \bSigma_{y^*}^{(ij)} (\btheta)\big) \dint \by^*_{ij}
+\pi_{cc'}^{(ij)}(\btheta) = \iint_{\tilde{\cC}_{cc'}} \phi_2\big(\by^*_{ij} \mid \bzero, \bSigma_{y^*}^{(ij)} (\btheta)\big) \dint \by^*_{ij}
 $$
 :::
 
@@ -453,13 +463,13 @@ $$
 \left\{ \cH(\btheta)\cJ(\btheta)^{-1}\cH(\btheta) \right\}^{-1}
 \right),\hspace{1em} \text{where}
 $${#eq-asymptotic-mple}
-   - $\cH(\btheta)=-\E\nabla^2\log \pL(\btheta \mid \by^{(h)})$ is the *sensitivity matrix*; and
-   - $\cJ(\btheta)=\Var\big(\nabla\log\pL(\btheta \mid \by^{(h)})\big)$ is the *variability matrix*.
+   - $\cH(\btheta)=-\E\big[\nabla^2\log \pL(\btheta \mid \by^{(h)})\big]$ is the *sensitivity matrix*; and
+   - $\cJ(\btheta)=\Var\big[\nabla\log\pL(\btheta \mid \by^{(h)})\big]$ is the *variability matrix*.
 
 ::: {.fragment .nudge-up-small}
 - Estimators of these matrices are given by [@zhao.joe05;@asparouhov2005sampling]
 
-::: {.nudge-up-xl}
+::: {.nudge-up-large}
 $$
 \begin{aligned}
 \hat\bH &= - \frac{1}{\sum_h w_h} \sum_h \nabla^2\log \pL(\btheta \mid \by^{(h)}) \Bigg|_{\btheta = \mlepl} \hspace{2em}\text{and} \\
@@ -543,7 +553,7 @@ knitr::include_graphics("figures/mult_bern2.png")
 :::: {.absolute left=585 top=60}
 
 ::: {.fragment fragment-index=1 .fade-out}
-Consider instead the fit of the lower order marginals.
+Consider instead the fit of the lower order moments.
 
 - **Univariate**:  $\ \dot\pi_i := \Pr(y_i = 1)$
 
@@ -589,7 +599,7 @@ knitr::include_graphics("figures/mult_bern4.png")
 
 ## Transformation matrix
 
-Define $\bT_2: \mathbb{R}^R \to \mathbb{R}^S$ such that $\bpi \mapsto \bpi_2$.
+Consider $\bT_2: \mathbb{R}^R \to \mathbb{R}^S$ defined by $\bpi \mapsto \bpi_2$.
 To illustrate, consider $p=3$ so that $R=2^3=8$ and $S=3+3=6$.
 
 $$
@@ -673,7 +683,6 @@ $$
 where $\bOmega_2 = \left( \bI - \bDelta_2\cH(\btheta)^{-1} \bB(\btheta)  \right) \bSigma_2 \left( \bI - \bDelta_2\cH(\btheta)^{-1} \bB(\btheta)  \right)^\top$, 
 
 ::: {.nudge-down}
-
 - $\bSigma_2 = \bT_2\bSigma\bT_2^\top$ (uni \& bivariate multinomial matrix);
 - $\bDelta_2 = \bT_2 \big(\partial\pi_r(\btheta) / \partial\theta_k \big)_{r,k}$ (uni \& bivariate derivatives);
 - $\cH(\btheta)$ (sensitivity matrix); and
@@ -682,7 +691,7 @@ where $\bOmega_2 = \left( \bI - \bDelta_2\cH(\btheta)^{-1} \bB(\btheta)  \right)
 :::
 
 ::: {.nudge-up}
-To use $\bOmega_2$ in practice, use "hat versions" of relevant matrices.
+To use $\bOmega_2$ in practice, replace with "hat versions" of relevant matrices.
 :::
 
 <!-- Using usual Taylor expansion arguments, we can show -->
@@ -724,9 +733,6 @@ where the $\delta_s$ are the eigenvalues of $\bM = \bOmega_2\bXi$. Two cases:
 
 1. If $\bM$ is idempotent, then the chi square is exact.
 2. Otherwise, it is a sum of scaled chi squares. Can be *approximated* by a chi square with degrees of freedom needing estimation [@cai2006limited].
-
-
-<!-- - **Wald test**. Set $\bXi=\bOmega_2^+$, the Moore-Penrose generalised inverse of $\bOmega_2$. Then $X^2$ -->
 
 ## Test statistics used
 
@@ -1016,7 +1022,7 @@ Larger values of $y_1^*$ result in smaller probabilities of selection.
 ### Bias
 
 ```{r}
-load("R/sims_uneq_samp.RData")
+load("R/sims_uneq_samp_mod5.Rdata")
 tab_bias_gt$`_data`$PML_500a <- abs(tab_bias_gt$`_data`$PML_500)
 tab_bias_gt$`_data`$PMLW_500a <- abs(tab_bias_gt$`_data`$PMLW_500)
 tab_bias_gt$`_data`$PML_1000a <- abs(tab_bias_gt$`_data`$PML_1000)
@@ -1027,21 +1033,26 @@ tab_bias_gt$`_data`$PMLW_5000a <- abs(tab_bias_gt$`_data`$PMLW_5000)
 tab_bias_gt |>
   fmt_number(columns = -"truth", decimals = 2) |>
   tab_options(
-    table.font.size = "22px"
+    table.font.size = "22px",
+    # table.layout = "auto",
+    quarto.disable_processing = TRUE
   ) |>
   data_color(
     columns = c("PML_500a", "PMLW_500a", "PML_1000a", "PMLW_1000a", "PML_5000a", "PMLW_5000a"),
     target_columns = c("PML_500", "PMLW_500", "PML_1000", "PMLW_1000", "PML_5000", "PMLW_5000"),
     method = "numeric",
-    palette = "viridis",
+    palette = "plasma",
     domain = c(0, 0.32),
     alpha = 0.9
-  )
+  ) |>
+  cols_width(
+    3:8 ~ px(120)
+  ) 
 ```
 
-## Informative sampling (results)
+## Informative sampling (results)  {.scrollable}
 
-### Coverage and SD/SE ratio
+### Coverage and SD/SE ratio 
 
 ```{r}
 tab_se_gt$`_data`$cov_PML_500a <- abs(tab_se_gt$`_data`$cov_PML_500 - 0.95)
@@ -1067,7 +1078,7 @@ tab_se_gt |>
     columns = c("cov_PML_500a", "cov_PMLW_500a", "cov_PML_1000a", "cov_PMLW_1000a", "cov_PML_5000a", "cov_PMLW_5000a"),
     target_columns = c("cov_PML_500", "cov_PMLW_500", "cov_PML_1000", "cov_PMLW_1000", "cov_PML_5000", "cov_PMLW_5000"),
     method = "numeric",
-    palette = "viridis",
+    palette = "plasma",
     domain = c(0, 0.95),
     alpha = 0.9
   ) |>
@@ -1075,7 +1086,7 @@ tab_se_gt |>
     columns = c("ratio_PML_500a", "ratio_PMLW_500a", "ratio_PML_1000a", "ratio_PMLW_1000a", "ratio_PML_5000a", "ratio_PMLW_5000a"),
     target_columns = c("ratio_PML_500", "ratio_PMLW_500", "ratio_PML_1000", "ratio_PMLW_1000", "ratio_PML_5000", "ratio_PMLW_5000"),
     method = "numeric",
-    palette = "viridis",
+    palette = "plasma",
     domain = c(0, 2.65),
     alpha = 0.9
   )
@@ -1083,7 +1094,7 @@ tab_se_gt |>
 
 ## Educational survey
 
-Simulate a population of $1e6$ students clustered within classrooms and stratified by school type (correlating with abilities). 
+Simulate a population of 10^6^ students clustered within classrooms and stratified by school type (correlating with abilities). 
 
 ::: {.columns}
 

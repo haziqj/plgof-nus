@@ -1,0 +1,486 @@
+---
+title: "Technical details"
+output:
+  bookdown::html_document2:
+    toc: yes
+    toc_depth: 2
+    number_sections: FALSE
+link-citations: yes
+bibliography: refs.bib
+nocite: |
+  @maydeu2008overview, @reiser1996analysis, @bartholomew2002goodness, @katsikatsou2012pairwise
+pkgdown:
+  as_is: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(lavaan.bingof)
+```
+
+```{r, echo = FALSE, results = "asis"}
+# LaTeX shortcuts 
+cat(readr::read_file("maths_shortcuts.tex"))
+``` 
+
+<!-- Extra LaTeX commands -->
+\newcommand{\pimod}[1]{\pi_{#1}(\btheta)}
+\newcommand{\Sigmaystar}{\bSigma_{\by^*}}
+\newcommand{\pl}{\operatorname{\ell_P}}
+\newcommand{\mlepl}{\hat\btheta_{\text{PL}}}
+\newcommand{\mle}{\hat\btheta_{\text{ML}}}
+\newcommand{\pimodpl}{\pi_{y_iy_j}^{(ij)}(\btheta)}
+\newcommand{\tr}{\operatorname{tr}}
+<!-- Extra LaTeX commands -->
+
+Let $\bY = (Y_1, \dots, Y_p)^\top \in \{0,1\}^p$ be a vector of Bernoulli random variables. 
+Consider a response pattern $\by = (y_1,\dots,y_p)^\top$, where each $y_i\in\{0,1\}$.
+The probability of observing such a response pattern is given by the joint distribution
+\begin{align*}
+\pi
+&= \Pr(\bY = \by)  = \Pr(Y_1=y_1,\dots,Y_p=y_p).
+(\#eq:jointprob1)
+\end{align*}
+Note that there are a total of $R=2^p$ possible joint probabilities $\pi_r$ corresponding to all possible two-way response patterns $\by_r$.
+
+When we consider a parametric model with parameter vector $\btheta\in\bbR^m$, we write $\pi_r(\btheta)$ to indicate each joint probability, and 
+\begin{equation}
+\bpi(\btheta) = \begin{pmatrix}
+\pimod{1} \\
+\vdots \\
+\pimod{R}  \\
+\end{pmatrix} \in [0,1]^R
+(\#eq:jointprob2)
+\end{equation}
+for the vector of joint probabilities, with $\sum_{r=1}^R \pimod{r} =1$.
+
+## Model-based probabilities
+
+The model of interest is a factor model, commonly used in social statistics.
+Using an underlying variable (UV) approach, the observed binary responses $y_i$ are manifestations of some latent, continuous variables $Y_i^*$, $i=1,\dots,p$.
+The connection is made as follows:
+$$
+Y_i = \begin{cases}
+1 & Y_i^* > \tau_i \\
+0 & Y_i^* \leq \tau_i,
+\end{cases}
+$$
+where $\tau_i$ is the threshold associated with the variable $Y_i^*$.
+For convenience, $Y_i^*$ is taken to be standard normal random variables^[For parameter identifiability, the location and scale of the normal distribution have to be fixed if the thresholds are to be estimated.].
+The factor model takes the form
+$$
+\mathbf Y^* = \mathbf \Lambda\boldsymbol \eta + \boldsymbol \epsilon,
+$$
+where each component is explained below:
+
+- $\mathbf Y^* = (Y_1^*,\dots,Y_p^*)^\top \in \mathbf R^p$ are the underlying variables;
+
+- $\boldsymbol\Lambda \in \mathbf R^{p \times q}$ is the matrix of loadings;
+
+- $\boldsymbol \eta = (\eta_1,\dots,\eta_q)^\top \in \mathbf R^q$ is the vector of latent factors;
+
+- $\boldsymbol \epsilon \in \mathbf R^p$ are the error terms associated with the items (aka unique variables).
+
+We also make some distributional assumptions, namely
+
+1. $\boldsymbol\eta \sim \operatorname{N}_q(\mathbf 0, \boldsymbol\Psi)$, where $\bPsi$ is a correlation matrix, i.e. for $k,l\in\{1,\dots,q\}$,
+$$
+\bPsi_{kl} = \begin{cases}
+1 & \text{if }  k = l \\
+\rho(\eta_k, \eta_l) & \text{if } k \neq l.
+\end{cases}
+$$
+
+2. $\boldsymbol \epsilon \sim \operatorname{N}_p(\mathbf 0, \boldsymbol\Theta_\epsilon)$, with $\boldsymbol\Theta_\epsilon = \mathbf I - \operatorname{diag}(\boldsymbol\Lambda \boldsymbol\Psi \boldsymbol\Lambda^\top)$.
+
+These two assumptions, together with $\operatorname{Cov}(\boldsymbol\eta, \boldsymbol\epsilon) = 0$, implies that $\mathbf Y^*\sim\operatorname{N}_p(\mathbf 0,\Sigmaystar)$, where
+\begin{align}
+\Sigmaystar
+= \operatorname{Var}(\mathbf Y^*) 
+&= \boldsymbol\Lambda\boldsymbol\Phi\boldsymbol\Lambda^\top + \boldsymbol\Theta_\epsilon \\
+&= \mathbf I + (\boldsymbol\Lambda\boldsymbol\Phi\boldsymbol\Lambda^\top - \operatorname{diag}\big(\boldsymbol\Lambda \boldsymbol\Phi \boldsymbol\Lambda^\top)\big).
+\end{align}
+<!-- Evidently, -->
+<!-- $$ -->
+<!-- \operatorname{Cor}(y_i^*, y_{i'}^*) = \sum_{k,l=1}^q \lambda_{ik}\lambda_{i'l} (1 + \rho(z_k,z_l)). -->
+<!-- $$ -->
+The parameter vector for this factor model is denoted $\boldsymbol\theta^\top = (\boldsymbol\lambda, \boldsymbol\psi, \boldsymbol\tau) \in\bbR^m$, where it contains the vectors of the free non-redundant parameters in $\boldsymbol\Lambda$ and $\boldsymbol \Psi$ respectively, as well as the vector of all free thresholds.
+
+Under this factor model, the probability of response pattern $\mathbf y_r$ is
+\begin{align}
+\pimod{r}
+&= \Pr(\mathbf Y = \mathbf y_r \mid \boldsymbol\theta) \\
+&= \idotsint_A \phi_p(\mathbf y^* \mid \mathbf 0, \boldsymbol\Sigma_{\mathbf y^*} ) \, \text{d}\mathbf y^*
+\end{align}
+where $\phi_p(\cdot \mid \boldsymbol\mu,\boldsymbol\Sigma)$ is the density function of the $p$-dimensional normal distribution with mean $\boldsymbol\mu$ and variance $\boldsymbol\Sigma$.
+This integral is evaluated on the set
+$$
+A = \{ \mathbf Y^* \in \mathbb R^p \mid Y_1=y_1,\dots,Y_p=y_p \}.
+$$
+
+
+## Parameter estimation
+
+Suppose that $h=1,\dots,n$ observations of $\bY=\by^{(h)}$ are obtained.
+For the purpose of generalising from independent samples to complex samples, suppose that each unit $h$ in the sample is assigned a (normalised) survey weight $w_h$ with $\sum_h w_h = n$.
+Of course, if an independent simple random sampling scheme is implemented, then each $w_h=1$.
+
+The sample proportions for each category $r$ is written $p_r = \hat n_r/n$, where
+<!-- Let $p_r = \hat n_r/n$ be the $r$th entry of the $R$-vector of proportions $\bp$, where -->
+\begin{equation}
+\hat n_r = \sum_h w_h [\by^{(h)} = \by_r],
+\end{equation}
+and $[\cdot]$ denotes the Iverson bracket.
+In other words, $\hat n_r$ represents the (weighted) frequency counts of the observed response patterns such that $\sum_{r=1}^R \hat n_r = n$.
+The vector $\hat\bn = (\hat n_1, \dots, \hat n_R)^\top$ then defines a *multivariate binomial distribution*, or more commonly called a multinomial distribution with parameters $n$, $R$, and $\bpi(\btheta)$.
+The probability mass function of $\hat\bn$ is given by
+\begin{equation}
+f_{\hat\bn}(x_1,\dots,x_R) = n! \prod_{r=1}^R \frac{1}{x_r!} \big[\pimod{r}\big]^{x_r},
+\end{equation}
+and the log-likelihood for $\btheta$ given the observed frequencies $\hat\bn$ (ignoring constants) is then
+\begin{equation}
+\ell(\btheta) = \log f_{\hat\bn}(\hat n_1,\dots,\hat n_R) = \sum_{r=1}^{R} \hat n_r \log \pimod{r}.
+\end{equation}
+
+The maximum likelihood estimator $\mle$ satisfies $\mle = \argmax_{\btheta} \ell(\btheta)$.
+Maximum likelihood theory tells us that, under certain regularity conditions, as $n\to\infty$,
+\begin{equation}\label{eq:limitdisttheta}
+\sqrt n (\hat\btheta - \btheta) \xrightarrow{\text D} {\N}_m\big(\bzero, \cI(\btheta)^{-1}\big),
+\end{equation}
+where $\bbR^{m\times m} \ni \cI = -n^{-1}\E \nabla^2 \ell(\btheta)$ is the *(unit) expected Fisher information matrix*.
+It can be further shown that $\cI = \bDelta^\top \bD^{-1} \bDelta$, where
+
+- $\bDelta_{r,k} = \frac{\partial\pi_r(\btheta)}{\partial\theta_k}$, $r=1,\dots,R$, $k=1,\dots,m$; and
+- $\bD = \diag(\bpi(\btheta))$.
+
+The maximum likelihood estimators are a class of *best asymptotically normal* (BAN) estimators $\hat\btheta$ of $\btheta$ that satisfy
+\begin{equation}
+\sqrt n (\hat\btheta - \btheta) = \sqrt n \, \bB \big(\bp - \bpi(\btheta)\big) + o(1)
+(\#eq:ban)
+\end{equation}
+for some $m\times R$ matrix $\bB$.
+In the specific case of maximum likelihood estimation, we can derive $\bB$ to be $\bB = \cI^{-1} \bDelta^\top \bD^{-1}$.
+This is proven in the corresponding article (see XXX for more details).
+
+### Pairwise likelihood estimation
+
+The main interest for this project is to construct test statistics using composite likelihood methods, specifically the pairwise likelihood method.
+In order to define the pairwise likelihood, let $\pi_{y_iy_j}^{(ij)}(\btheta)$ be the probability under the model that $Y_i=y_i \in \{0,1\}$ and $Y_j=y_j\in\{0,1\}$ for a pair of variables $Y_i$ and $Y_j$, $i,j=1,\dots,p$ and $i<j$.
+<!-- That is, -->
+<!-- $$ -->
+<!-- \pi_{y_iy_j}^{(ij)}(\btheta) = \Pr(Y_i = y_i, Y_j = y_j). -->
+<!-- $$ -->
+The pairwise log-likelihood takes the form
+\begin{equation}
+\pl(\btheta) = \sum_{i<j} \sum_{y_i}\sum_{y_j} \hat n_{y_iy_j}^{(ij)} \log \pi_{y_iy_j}^{(ij)}(\btheta),
+\end{equation}
+where $\hat n_{y_iy_j}^{(ij)}$ is the observed (weighted) frequency of sample units with $Y_i=y_i$ and $Y_j=y_j$,
+$$
+\hat n_{y_iy_j}^{(ij)} = \sum_h w_h [\by^{(h)}_i = y_i, \by^{(h)}_j = y_j].
+$$
+Let us also define the corresponding observed pairwise proportions $p_{y_iy_j}^{(ij)} = \hat n_{y_iy_j}^{(ij)}/n$.
+There are a total of $\tilde R = 4 \times {p \choose 2}$ summands, where the '4' is representative of the total number of pairwise combinations of binary choices '00', '10', '01', and '11'.
+
+The *pairwise maximum likelihood estimator* $\mlepl$ satisfies $\mlepl = \argmax_{\btheta} \pl(\btheta)$.
+Under certain regularity conditions,
+\begin{equation}
+\sqrt N (\mlepl - \btheta) \xrightarrow{D} {\N}_m\big(\bzero, \cH(\btheta)\cJ(\btheta)^{-1}\cH(\btheta)\big),
+\end{equation}
+where
+  
+  - $\cH(\btheta)=-\E\nabla^2\pl(\btheta)$ is the *sensitivity matrix*; and
+  - $\cJ(\btheta)=\Var\big(\sqrt N \nabla\pl(\btheta)\big)$ is the *variability matrix*.
+  
+We can also show that the pairwise maximum likelihood estimator satisfies \@ref(eq:ban), where the matrix $\bB$ in this case would be $\bB = \cH^{-1}\tilde\bDelta^{-1}\tilde \bD^{-1} \bG$, with 
+
+- $\tilde\bDelta \in \bbR^{\tilde R \times m}$ consists of partial derivatives of the pairwise probabilities, i.e. $\frac{\partial\pimodpl}{\partial\theta_k}$;
+- $\tilde\bD = \diag((\pimodpl)_{i<j})$; and 
+- $\bG$ is some indicator matrix to transform the quantities from $\tilde R$ dimensions to $R$ dimensions. See other articles for further details.
+
+## Goodness-of-fit
+
+Collect all the sample proportions $p_r = \hat n_r/n$, $r=1,\dots,R$ to form an $R$-vector of proportions $\bp$.
+For independent samples, it is widely known [@agresti2012categorical] that
+\begin{equation}
+\sqrt N (\bp - \bpi) \xrightarrow{\text D} {\N}_R (\bzero, \bSigma),
+(\#eq:propclt)
+\end{equation}
+where $\bSigma = \bD - \bpi\bpi^\top$, with $\bD:= \diag(\bpi)$.
+Considering a parametric model, the proportion vector in \@ref(eq:propclt) reads $\bpi = \bpi(\btheta)$.
+An analogous result for the complex sampling design case exists as well [@fuller2009introduction]; however the covariance matrix $\bSigma$ need not take a multinomial form, and the true proportions $\bpi$ may either be a finite population or a superpopulation quantity.
+
+Suppose we denote by $\bpi(\hat\btheta)$ the *estimated* proportions under a parametric model.
+For estimators $\hat\btheta$ satisfying \@ref(eq:ban), @maydeu2005limited show that the distribution of the residuals $\hat\be = \bp - \bpi(\hat\btheta)$ is asymptotically normal:
+\begin{equation}
+\sqrt n \hat\be = \sqrt n \big( \bp - \bpi(\hat\btheta) \big) \xrightarrow{\text D} {\N}_R (\bzero, \bOmega) 
+\end{equation}
+where 
+\begin{align}
+\bOmega 
+&= (\bI - \bDelta\bB)\bSigma(\bI - \bDelta\bB)^\top \\
+&= \bSigma - \bSigma\bB^\top\bDelta^\top - \bDelta \bB \bSigma + \bDelta \bB \bSigma \bB^\top \bDelta^\top,
+\end{align}
+with $\bB$ being the transformation matrix and $\bDelta$ the matrix of partial derivatives of $\bpi(\btheta)$ (both described previously). 
+@maydeu2005limited remarks that for maximum likelihood estimators, the residual covariance matrix simplifies to $\bOmega = \bSigma - \bDelta \cI^{-1}_1\bDelta^\top$. 
+We do not think such a simplification exists for the pairwise likelihood case **[Hold that thought. Maybe it's possible. Still investigating.]**.
+
+### Lower-order residuals
+
+The interest here is in obtaining the lower-order marginals from the full $R$-dimensional probability vector $\bpi$.
+Namely, we would like to get
+
+1. Univariate moments of the form $\dot\pi_i = \Pr(Y_i=1)$ (of which there are $p$)
+$$
+\dot\bpi_1^\top = (\dot\pi_1,\dots,\dot\pi_p) \in[0,1]^p
+$$
+
+2. Bivariate moments of the form $\dot\pi_{ij}=\Pr(Y_i=1,Y_j=1)$ (of which there are ${p \choose 2}$)
+$$
+\dot\bpi_2^\top = \Big(\dot\pi_{ij} \Big)_{\substack{i,j=1\\i<j}}^n \in [0,1]^{p(p-1)/2}
+$$
+
+The bivariate moments in particular will be especially relevant when considering a pairwise likelihood estimation of the parametric model.
+Denote $\bpi_2 = \begin{pmatrix}\dot{\bpi}_1\\ \dot{\bpi}_2  \end{pmatrix}$ as the $S:=p(p+1)/2$ vector of univariate and bivariate moments.
+Correspondinly, let $\bp_2$ be the $S$-vector of univariate and bivariate sample moments.
+It is possible to obtain $\bpi_2$ (as well as $\bp_2$) via a transformation of the full vector of probabilities $\bpi$ (c.f. $\bp$):
+\begin{equation}
+\bpi_2 = \bT_2 \bpi.
+\end{equation}
+Here, $\bT_2$ is an indicator matrix of dimension $S \times R$.
+See the articles for further details.
+
+Consider now the lower order residuals of up to order 2 under a parametric model, defined by 
+\begin{equation}
+\hat\be_2 = \bp_2 - \bpi_2(\hat\btheta) = \bT_2 \big(\bp - \bpi(\hat\btheta) \big) = \bT_2\hat\be.
+\end{equation}
+It should be straightforward to see, using the previous results, that as $n\to\infty$ we get
+\begin{equation}
+\sqrt n \hat\be_2 = \sqrt N \big(\bp_2 - \bpi_2(\hat\btheta)\big) \xrightarrow{\text D} \N(\bzero, \bOmega_2), (\#eq:asympdiste2)
+\end{equation}
+where 
+\begin{align}
+\bOmega_2 
+= \bT_2\bOmega\bT_2^\top 
+&= \bT_2 (\bI - \bDelta\bB)\bSigma(\bI - \bDelta\bB)^\top  \bT_2^\top  \\
+&= \bSigma_2 - \bT_2\bSigma\bB^\top\bDelta_2^\top - \bDelta_2 \bB \bSigma \bT_2^\top + \bDelta_2 \bB \bSigma \bB^\top \bDelta_2^\top, (\#eq:Omega2)
+\end{align}
+with $\bSigma_2 = \bT_2\bSigma\bT_2^\top$ and $\bDelta_2=\bT_2\bDelta$ being the
+the transformed version of the respective matrices.
+For the specific case of maximum likelihood estimation, this simplifies to $\bOmega_2 = \bSigma_2 - \bDelta_2 \cI_1^{-1} \bDelta_2^\top$.
+For pairwise likelihood estimation, we show that 
+$$
+\bOmega_2 = (\bI - \bDelta_2\bB_2)\bSigma_2(\bI - \bDelta_2\bB_2)^\top, (\#eq:ourOmega2)
+$$
+where the transformation matrix in full is given by $\bB_2 = \cH^{-1}\tilde\bDelta^\top\tilde\bD^{-1}\bG\bT_2$.
+For posterity, the $\bB(\btheta)$ matrix in our manuscript is actually $\bB(\btheta) = \tilde\bDelta^\top\tilde\bD^{-1} B$, where the indicator matrix $B$ is $B = \bG\bT_2$ in the notation of the present article.
+
+As a remark, while elegant in theory, forming the matrix $\bOmega_2$ via the linear transformation $\bT_2$ is impractical when $p$ is large for two reasons.
+One, it involves multiplying an $S \times R$ matrix with an $R \times R$ matrix, and so this computation is of order $O(SR^2) = O(p(p+1)2^{2p-1})$.
+Two, storage requirements of the $R\times R$ matrix (e.g. $\bSigma$) may possibly be large and/or involve small numbers, so precision might be a concern.
+
+The advantage of our equation in \@ref(eq:ourOmega2) is that $\bOmega_2$ can be formed using the byproduct of the pairwise estimation procedure, i.e. using the matrices $\cH$ and $\tilde\bDelta$, as well as the (estimated) pairwise probabilities $\pimodpl$.
+What remains is the proper estimation of $\bSigma_2$, and this depends on the sampling design performed.
+The [complex sampling procedure](complex_sampling1.html) article touches upon this briefly, with further details available in the manuscript.
+
+### Summary
+
+In general, all (limited information) goodness-of-fit test statistics take the form
+$$
+X^2 = n \hat\be_2^\top \hat\bXi \hat\be_2, (\#eq:quadform)
+$$
+where $\hat\bXi \xrightarrow{\text P} \bXi$ is some $S\times S$ weight matrix.
+We summarise the various weight matrices that we use in this R package:
+
+|   | Name        | Weight ($\bXi$)     | D.f.  | R function          | Remarks                           |
+|---|-------------|---------------------|-------|---------------------|-----------------------------------|
+| 1 | Wald        | $\bOmega_2^+$       | $S-m$ | `Wald_test()`       | $\bOmega_2$ may be rank deficient |
+| 2 | Wald V2     | $\diag(\bOmega_2)^{-1}$       | est.  | `Wald_diag_test()`    | $\bOmega_2$ need not be inverted  |
+| 3 | Wald V3     | $\bXi\bOmega_2\bXi$ | $S-m$ | `Wald_vcovf_test()`    | $\bOmega_2$ need not be estimated |
+| 4 | Pearson     | $\diag(\bpi_2)^{-1}$          | est.  | `Pearson_RS_test()` | Rao-Scott adjustment              |
+| 5 | Pearson V2  | $\diag(\bpi_2)^{-1}$          | est.  | `Pearson_test()` | Moment matching                   |
+| 6 | RSS         | $\bI$               | est.  | `RSS_test()`        |                                   |
+| 7 | Multinomial | $\bSigma_2^{-1}$    | est.  | `Multn_test()`      |                                   |
+
+It should be noted that all of the above tests, with the exception of the Wald V3 test, requires estimation of the $\bOmega_2$ matrices.
+For this purpose, we use the sample versions of the relevant quantities, mostly evaluating $\pimodpl$ at the estimates $\btheta=\mlepl$, i.e.
+
+- $\bH = - \nabla^2\pl(\btheta) \Big|_{\btheta=\mlepl}$ as estimating $\cH$;
+- $\hat{\tilde\bDelta_{sk}} = \frac{\partial\pimodpl}{\partial\theta_k} \Big|_{\btheta=\mlepl}$; 
+- $\hat{\tilde\bD} = \diag(\hat\pimodpl)$; and
+- an appropriate estimator of $\bSigma_2$.
+
+In general, all of these test statistics are chi square variates.
+However, for some of these tests, the degrees of freedom are not known a priori and have to be estimated.
+There are two methods that we consider: 1) A Rao-Scott type adjustment [@rao1979chi;@rao1981analysis;@rao1984chi]; and 2) a moment matching procedure [@bartholomew2002goodness].
+While in theory each test may be subjected to either a Rao-Scott type adjustment or a moment matching procedure, we only consider the Rao-Scott adjustment for the Pearson test.
+
+
+## Test statistics
+
+In this section, we elaborate further on the specific test statistics used.
+
+### Wald test
+
+One strategy is to choose $\bXi$ so that the resulting quadratic form $X^2$ in \@ref(eq:quadform) is asymptotically chi-square.
+This strategy is followed by @reiser1996analysis, @maydeu2005limited, and @maydeu2006limited.
+Choosing 
+
+- $\hat\bXi = \hat\Omega_2^-$ (the generalised inverse); or
+- $\hat\bXi = \hat\Omega_2^+$ (the Moore-Penrose inverse)
+
+ensures that $X^2 \xrightarrow{\text D} \chi^2_k$ where $k$ equals the rank of $\bOmega_2$.
+The pseudoinverse needs to be employed because $\bOmega_2$ may be of deficient rank.
+When $\bOmega_2$ is full rank (rank = $S$), then $\bXi$ is equal to the usual matrix inverse.
+For our implementation, and similar to @reiser1996analysis, we will be using the Moore-Penrose inverse.
+Finally, the degrees of freedom will be (at most) $S-m$, i.e. $S$ minus the number of free model parameters that need to be estimated.
+
+### Diagonal Wald test
+
+An alternative Wald test is studied where $\hat\bXi = \diag(\hat\bOmega_2)^{-1}$ is used instead of the pseudoinverse of $\bOmega_2$.
+We refer to this as the *Diagonal Wald test*.
+The motivation here is stability and ease of computation because it is straightforward to inverse a diagonal matrix rather than a full matrix which grows rapidly with the number of items $p$.
+However, it does not follow the same chi-square distribution as the original Wald test, and its distribution needs to be determined [@bartholomew2002goodness].
+We use the moment-matching procedure for this, which we briefly explain below.
+
+Suppose that $Y\sim \chi^2_c$.
+Then we assume that the test statistic $X^2 = n\hat\be_2 \hat\bXi \hat\be_2$ can be approximated by a linear transformation of this chi square random variate, i.e.
+$$
+X^2 \approx a + bY
+$$
+Let $\mu_k(X)=\E[(X - \E X)^k]$ represent the $k$th central moment for a random variable $X$.
+The first three asymptotic central moments of $X^2$ are [@mathai1992quadratic Theorem 3.2b.2, p.53]
+\begin{equation}
+\mu_1(X^2) = \tr(\hat\bXi\bOmega_2), \hspace{1em}
+\mu_2(X^2) = 2\tr\big((\hat\bXi\bOmega_2)^2\big), \hspace{1em}
+\mu_3(X^2) = 8\tr\big((\hat\bXi\bOmega_2)^3\big), (\#eq:moment1)
+\end{equation}
+while the first three central moments of the approximating random variables are
+\begin{equation}
+\mu_1 = a + bc, \hspace{2em}
+\mu_2 = 2b^2c, \hspace{2em}
+\mu_3 = 8b^3c. (\#eq:moment2)
+\end{equation}
+Useful to note here are the relationships $\mu_1=\E(Y)$, $\mu_2=\Var(Y)$, and $\mu_3=\E(Y^3)-3\mu\Var(Y)-\mu^3$ for any random variable $Y$, while
+the raw moments of a chi-square random variable with $c$ degrees of freedom are given by the formula $\E(Y^k)=c(c+2)(c+4)\cdots(c+2k-2)$.
+Equating the two sets of moments in \@ref(eq:moment1) and \@ref(eq:moment2) yields the **three-moment adjustment** parameters
+\begin{equation}
+b = \frac{\mu_3(X^2)}{4\mu_2(X^2)}, \hspace{2em}
+c = \frac{\mu_2(X^2)}{2b^2}, \hspace{2em}
+a = \mu_1(X^2) - bc.
+\end{equation}
+Tail area probabilities for $p$-value calculations can be computed as follows:
+\begin{equation}
+\Pr(X^2 > x) \approx \Pr\left(Y > \frac{x-a}{b} \ \Big| \ Y \sim \chi^2_c\right).
+\end{equation}
+
+We can also use two-moments and one-moment matching techniques similarly.
+For the **two-moment adjustment**, assume that $X^2 \approx bY$ where $Y\sim\chi^2_c$.
+Then matching the first two asymptotic moments of $X^2$ with the approximating random variable gives 
+\begin{equation}
+b = \frac{\mu_2(X^2)}{2\mu_1(X^2)}
+\hspace{1em}\text{and}\hspace{1em}
+c = \frac{\mu_1(X^2)}{b}.
+\end{equation}
+As for the **one-moment adjustment**, $X^2$ is again approximated by $Y\sim\chi^2_c$, but $c$ is fixed to be the number of degrees of freedom available for testing (taken to be $c=S-m$).
+Solving for $b$ yields
+\begin{equation}
+b = \frac{\mu_1(X^2)}{c}.
+\end{equation}
+In both cases, tail probabilities are calculated as 
+\begin{equation}
+\Pr(X^2 > x) \approx \Pr\left(Y > \frac{x}{b} \ \Big| \ Y \sim \chi^2_c\right).
+\end{equation}
+@maydeu2008overview advises that one-moment matching results in inaccurate $p$-values.
+
+### Variance-covariance free Wald test
+
+The drawbacks of using $\hat\bOmega_2^+$ as a weight matrix in the quadratic form is that 1) $\bOmega_2$ needs to be estimated; and 2) the degrees of freedom $k$ cannot be determined a priori and can be tricky (if done by looking at small eigenvalues, it can be tricky to judge wchih are actually zero).
+
+To overcome this, @maydeu2005limited and @maydeu2006limited suggested using a weight matrix $\bXi$ such that $\bOmega_2$ is a g-inverse of $\bXi$, i.e. $\bXi = \bXi\bOmega_2\bXi$.
+<!-- Specifically, they proposed using -->
+<!-- \begin{align} -->
+<!-- \bXi  -->
+<!-- &= \bSigma_2^{-1} - \bSigma_2^{-1}\bDelta_2(\bDelta_2^\top \bSigma_2^{-1}\bDelta_2)^{-1}\bDelta_2^\top\bSigma_2^{-1} \nonumber \\ -->
+<!-- &= \bDelta_2^\perp \big( (\bDelta_2^\perp)^\top \bSigma_2 \bDelta_2^\perp \big)^{-1} (\bDelta_2^\perp)^\top -->
+<!-- \end{align} -->
+<!-- evaluated at $\hat\btheta$. -->
+<!-- Here $\bDelta_2^\perp$ is the $S \times (S-m)$ orthogonal complement of $\bDelta_2$, i.e. it satisfies $(\bDelta_2^\perp)^\top\bDelta_2 = \bzero$. -->
+Let $\bDelta_2^\perp$ be an $S \times (S-m)$ orthogonal complement to $\bDelta_2$, i.e. it satisfies $(\bDelta_2^\perp)^\top\bDelta_2 = \bzero$.
+Then from \@ref(eq:asympdiste2), we see that 
+$$
+\sqrt n (\bDelta_2^\perp)^\top \hat \be_2 \xrightarrow{\text D} \N(\bzero, (\bDelta_2^\perp)^\top \bOmega_2 \bDelta_2^\perp). (\#eq:e2OC)
+$$
+Because of \@ref(eq:Omega2), the asymptotic covariance matrix may be written
+$$
+(\bDelta_2^\perp)^\top \bOmega_2 \bDelta_2^\perp = (\bDelta_2^\perp)^\top \bSigma_2 \bDelta_2^\perp,
+$$
+since all the multiplications of $\bDelta_2$ with its orthogonal complement cancels out.
+By letting
+$$
+\bXi = \bDelta_2^\perp \big( (\bDelta_2^\perp)^\top \bSigma_2 \bDelta_2^\perp \big)^{-1} (\bDelta_2^\perp)^\top,
+$$
+we can then verify $\bXi = \bXi \bOmega_2\bXi$; that is, $\bOmega_2$ is a generalised inverse of $\bXi$.
+Let $\hat\bXi$ be an appropriate estimate of $\bXi$, e.g. by replacing the matrices above with their corresponding hat versions.
+The implication here is that
+$$
+X^2 
+= n \hat\be_2^\top \hat\bXi \hat\be_2 
+= n \hat\be_2^\top  \hat\bDelta_2^\perp \big( (\hat\bDelta_2^\perp)^\top \hat\bSigma_2 \hat\bDelta_2^\perp \big)^{-1} (\hat\bDelta_2^\perp)^\top \hat\be_2
+$$
+converges in distribution to a $\chi^2_{S-m}$ variate as $n\to\infty$ due to \@ref(eq:e2OC) and Slutsky's theorem.
+The degrees of freedom is as such because $\bDelta_2^\perp$ is of full column rank $S-m$ and hence $\bXi$ is also of rank $S-m$.
+The dimensions of a vector space and its orthogonal complement always add up to the dimension of the whole space. Since $\bDelta_2 \in \bbR^{S\times m}$ has dimension (column rank) $m$, the column space has an orthogonal complement in $\bbR^S$, and thus the dimension of this orthogonal complement is $S-m$.
+
+### Pearson test
+
+To construct a Pearson test statistic, let $\hat\bXi^{-1} = \hat\bD_2 := \diag\big( \bpi_2(\hat\btheta) \big) \xrightarrow{\text P} \bD_2:=\diag\big( \bpi_2(\btheta) \big).$
+Then we can see that
+\begin{equation}\label{eq:Pearsontest}
+X^2 = n\hat\be_2^\top\hat\bD_2^{-1}\hat\be_2 = n \sum_{r=1}^R \frac{(\dot p_r - \dot\pi_r(\hat\btheta))^2}{\dot\pi_r(\hat\btheta)} + 
+n \sum_{r<s} \frac{(\dot p_{rs} - \dot\pi_{rs}(\hat\btheta))^2}{\dot\pi_{rs}(\hat\btheta)},
+\end{equation}
+which resembles the traditional Pearson chi-square test statistic.
+Note that
+\begin{equation}
+\sqrt n \hat\bD_2^{-1/2}\hat\be_2 \xrightarrow{\text D} \N(\bzero, \bD_2^{-1/2}\bOmega_2 \bD_2^{-1/2})
+\end{equation}
+as $N\to\infty$, and therefore $X^2$ has the limiting distribution of $\sum_{s=1}^S \delta_s X_s$, where $\delta_s$ are eigenvalues of $n^{-1} \bD_2^{-1/2}\bOmega_2 \bD_2^{-1/2}$ and $X_s\iid \chi^2_1$ [@mathai1992quadratic, Representation 3.1a.1, p.29].
+These eigenvalues can be estimated by the eigenvalues of $n^{-1} \hat\bD_2^{-1/2}\hat\bOmega_2 \hat \bD_2^{-1/2}$.
+In principle, this method can be applied more generally by considering a Choleski decomposition $\bXi = \bL\bL^\top$ instead of matrix square roots.
+Of course, this only works if the matrix $\bXi$ is of full rank, which rules out the Wald test statistic above.
+
+Let $\bar\delta$ represent the arithmetic mean of the eigenvalues $\delta_s$.
+The asymptotic mean and variance of $X^2$ are
+\begin{align}
+\E X^2 &= \E \sum_{s=1}^S \delta_s X_s = \sum_{s=1}^S \delta_s = S\bar\delta = \tr(n^{-1} \bD_2^{-1/2}\bOmega_2 \bD_2^{-1/2}) \\
+\Var X^2 &= \Var \sum_{s=1}^S \delta_s X_s = 2\sum_{s=1}^S\delta_s^2 = 2\sum_{s=1}^S (\delta_s - \bar\delta)^2 + 2S\bar\delta^2,
+\end{align}
+So it seems that the power of the test is affected by the size and dispersion of the eigenvalues [@heo2014empirical].
+@rao1979chi;@rao1981analysis;@rao1984chi suggested adjustments to the Pearson test as follows.
+
+1. First-order Rao-Scott type test is obtained by dividing $X^2$ by $\bar \delta$. This statistic is distributed as $\chi^2_S$.
+
+2. Second-order Rao-Scott type test is obtained by dividing $X^2/\bar\delta$ by $1+\hat a^2$, where $\hat a=\sqrt{S^{-1}\sum_{s=1}^S (\delta_s - \bar\delta)}\big/\bar\delta$ is the coefficient of variation of the eigenvalues. Hence, $1+\hat a^2= (S\bar\delta ^2)^{-1}\sum_{s=1}^s \delta_s^2$. This statistic is distributed as $\chi^2_k$ where $k=S(1+\hat a^2)^{-1}$.
+
+
+<!-- ### Residual sum of squares test -->
+
+<!-- ### Multinomial test -->
+
+## References
+
+
+
+
+
+
+
+
+
+
+
+
+
