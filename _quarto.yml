@@ -6,6 +6,7 @@ project:
 
 format:
   ubd-revealjs:
+    # footer: "`https://haziqj.ml/plgof-nus`"
     transition: fade
     auto-stretch: false
     width: 1250  # 1050

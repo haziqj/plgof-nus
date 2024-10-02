@@ -6,7 +6,7 @@ author:
     orcid: 0000-0003-3298-1010
     affiliations: 
       - 'Assistant Professor in Statistics, Universiti Brunei Darussalam<br>Visiting Fellow, London School of Economics and Political Science'
-      - '<span style="font-style:normal;">[`https://haziqj.ml/pligof-gent/`](https://haziqj.ml/pligof-gent/)</span>'
+      - '<span style="font-style:normal;">[`https://haziqj.ml/plgof-nus/`](https://haziqj.ml/plgof-nus/)</span>'
 date: "18 October 2024"
 editor_options: 
   chunk_output_type: console
@@ -55,7 +55,7 @@ cat(readr::read_file("maths_shortcuts.tex"))
 
 ::: {.nudge-up-xl}
 
-> Jamil, H., Moustaki, I., & Skinner, C. (2024). Pairwise likelihood estimation and limited information goodness-of-fit test statistics for binary factor analysis models under complex survey sampling. *Br. J. Math. Stat. Psychol., In Press* [`arXiv.2311.02543`](https://doi.org/10.48550/arXiv.2311.02543).
+> **Jamil, H.**, Moustaki, I., & Skinner, C. (2024). Pairwise likelihood estimation and limited information goodness-of-fit test statistics for binary factor analysis models under complex survey sampling. *Br. J. Math. Stat. Psychol., In Press* [arXiv.2311.02543](https://doi.org/10.48550/arXiv.2311.02543). URL: [`https://haziqj.ml/plgof-nus/`](https://haziqj.ml/plgof-nus/)
 
 :::
 
