@@ -1002,7 +1002,7 @@ print_theta_vals(5)
 
 :::
 
-## Informative sampling
+## Experiment 1: Informative sampling
 
 - Using M1: `1F5V`, generate a fixed population size of $N$. Then, assign each unit $h$ a probability of selection as follows:
 $$
@@ -1092,7 +1092,7 @@ tab_se_gt |>
   )
 ```
 
-## Educational survey
+## Experiment 2: Educational survey
 
 Simulate a population of 10^6^ students clustered within classrooms and stratified by school type (correlating with abilities). 
 
