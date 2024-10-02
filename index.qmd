@@ -1171,18 +1171,23 @@ n_schools |>
   fmt_number(columns = -"N", decimals = 1) |>
   cols_label(N = md("$N$"), type = "Type") |>
   tab_options(
-    table.font.size = "30px"
+    table.font.size = "30px",
+    quarto.disable_processing = TRUE
   )
 ```
 
-ICC for test items range between 0.05 and 0.60.
+$\text{ICC} \in (0.05, 0.60)$
 <!-- ($\frac{\sigma_u^2}{\sigma_u^2 + \sigma_\epsilon^2}$)  -->
 :::
 
 :::
 
+::: {.nudge-up}
+
 - **Cluster sample:** Sample $n_C$ schools using PPS, then sample 1 classroom via SRS, then select all students in classroom.
 - **Stratified cluster sample:** For each stratum, sample $n_S$ schools using SRS, then sample 1 classroom via SRS, then select all students in classroom.
+
+:::
 
 ## Educational survey (results) 
 
