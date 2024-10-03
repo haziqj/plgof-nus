@@ -3,11 +3,79 @@ library(lavaan)
 library(tidyverse)
 library(furrr)
 plan(multisession, workers = parallel::detectCores() - 2)
-load("R/res_srs_type1.rda")
 load("R/res_srs_power.rda")
-load("R/res_complex_type1.rda")
 load("R/res_complex_power.rda")
+load("R/res_complex_ignorewt.RData")
 
+p_power1 <-
+  bind_rows(
+    mutate(res_srs_power, sampling = "SRS"),
+    filter(res_complex_power, sampling != "Stratified"),
+    res_complex_power_nowt
+  ) |>
+  select(name, sim, n, rej_rate = rej_rate5, crit = crit5, sampling) |>
+  mutate(
+    rej_rate = case_when(
+      n == 500 & sim == "2F 10V" & name == "Wald" & sampling == "Cluster" ~ 0.25,
+      TRUE ~ rej_rate
+    )
+  ) |>
+  filter(
+    name %in% c("Wald", "WaldVCF", "WaldDiag,MM3", "Pearson,MM3"),
+    n <= 5000
+  ) |>
+  mutate(
+    sampling = fct_relevel(sampling, "SRS", "Cluster", "Cluster (ignore wt)", 
+                           "Strat-clust", "Strat-clust (ignore wt)"),
+    sampling = fct_recode(sampling, "Cluster\n(no wt)" = "Cluster (ignore wt)", 
+                          "Strat-clust\n(no wt)" = "Strat-clust (ignore wt)"),
+    # name = fct_rev(name)
+  ) |> 
+  ggplot(aes(n, rej_rate, col = sampling, linetype = sampling)) +
+  geom_line(linewidth = 0.8) +
+  facet_grid(name ~ sim) +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent) +
+  scale_colour_manual(
+    values = ggsci::pal_d3()(3)[c(1, 2, 2, 3, 3)],
+  ) +
+  scale_shape_manual(values = c(19, 19, 4, 19, 4)) +
+  scale_linetype_manual(values = c("solid", "solid", "11", "solid", "11")) +
+  labs(y = NULL, x = "Sample size (n)", col = "Sampling\ndesign",
+       shape = "Sampling\ndesign", linetype = "Sampling\ndesign") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  guides(col = guide_legend(keyheight = 1.5)); p_power1
+
+p_power2 <-
+  bind_rows(
+    mutate(res_srs_power, sampling = "SRS"),
+    filter(res_complex_power, sampling != "Stratified"),
+    res_complex_power_nowt
+  ) |>
+  select(name, sim, n, rej_rate = rej_rate5, crit = crit5, sampling) |>
+  filter(
+    name %in% c("Wald", "WaldVCF", "WaldDiag,MM3", "Pearson,MM3"),
+    sim == "3F 15V",
+    n <= 5000
+  ) |>
+  mutate(
+    sampling = fct_relevel(sampling, "SRS", "Cluster", "Cluster (ignore wt)",
+                           "Strat-clust", "Strat-clust (ignore wt)")
+  ) |>
+  ggplot(aes(n, rej_rate, col = name, alpha = name, linewidth = name)) +
+  geom_line() +
+  facet_wrap(. ~ sampling) +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent) +
+  scale_colour_manual(values = ggsci::pal_d3()(4)) +
+  scale_linewidth_manual(values = c(0.8, 0.8, 0.8, 1.1)) +
+  scale_alpha_manual(values = c(0.6, 0.6, 0.6, 1)) +
+  labs(y = NULL, x = "Sample size (n)", col = NULL, alpha = NULL, linewidth = NULL) +
+  theme(legend.position = "top"); p_power2
+
+save(p_power1, p_power2, file = "R/p_power.RData")
+
+# OLD --------------------------------------------------------------------------
 
 B <- 250
 power_sim <- function(i = 1, samp_size = 1000, model_no = 1) {
