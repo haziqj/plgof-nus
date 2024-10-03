@@ -20,12 +20,7 @@ library(semPlot)
 library(gt)
 library(tidyverse)
 library(Matrix)
-
 load("R/p_mult_bern_fig.RData")
-load("R/res_srs_type1.rda")
-load("R/res_srs_power.rda")
-load("R/res_complex_type1.rda")
-load("R/res_complex_power.rda")
 ```
 
 
@@ -68,9 +63,6 @@ Employ latent variable models (factor models) to analyse binary data $y_1,\dots,
 :::
 
 :::: {.columns}
-
-<!-- ::: {.column width="12.5%"} -->
-<!-- ::: -->
 
 ::: {.column width="33.3%"}
 ![*(Psychometrics)*<br>Behavioural checklist](figures/eg1a.jpg)
@@ -339,11 +331,9 @@ $${#eq-facmod-loglik}
 where $\pi_r(\btheta) = \int_{\cC_r} \phi_p(\by^* \mid \bzero, \bLambda\bPsi\bLambda^\top + \bTheta_\epsilon) \dint \by^*$.
 :::
 
-<!-- ::: {.fragment fragment-index=2} -->
 ::: {.fragment .fade-in .absolute top=643}
 - \normalsize FIML may be difficult (high-dimensional integral; perfect separation).
 :::
-<!-- ::: -->
 
 :::
 
@@ -366,28 +356,33 @@ $$
 :::
 :::
 
-<!-- - Composite likelihood is an inference function derived by multiplying a collection of component likelihoods -->
+::::: {.notes}
+- Composite likelihood is an inference function derived by multiplying a collection of component likelihoods
 
-<!-- - Because each individual component is a conditional or marginal density, the resulting estimating equation obtained from the derivative of the composite log-likelihood is an unbiased estimating equation -->
+- Because each individual component is a conditional or marginal density, the resulting estimating equation obtained from the derivative of the composite log-likelihood is an unbiased estimating equation
 
-<!-- - Because the components are multiplied, whether or not they are independent, the inference function has the properties of likelihood from a misspeciﬁed model -->
+- Because the components are multiplied, whether or not they are independent, the inference function has the properties of likelihood from a misspeciﬁed model
 
-<!-- - Terminology -->
-<!--   - Pseudo-likelihood: Function of parameter and data that behaves in "some respect" as a likelihood -->
-<!--   - Composite likelihood: An example of pseudo-likelihood, based on terms that are marginal or conditional densities -->
-<!--   - Quasi-likelihood: Wedderburn's likelihood which is not a pdf or misspecified likelihoods -->
-<!--   - Limited information methods: Inference procedures based on low-dimensional margins. -->
-
-
-
-<!-- - Some history -->
-<!--   - Besag (1974) introduced the idea of composite likelihood for spatial data -->
-<!--   - Liang (1987) studies composite conditional likelihoods -->
-<!--   - Molenberghs and Verbeke (2005) in the context of longitudinal studies -->
+- Terminology
+  - Pseudo-likelihood: Function of parameter and data that behaves in "some respect" as a likelihood
+  - Composite likelihood: An example of pseudo-likelihood, based on terms that are marginal or conditional densities
+  - Quasi-likelihood: Wedderburn's likelihood which is not a pdf or misspecified likelihoods
+  - Limited information methods: Inference procedures based on low-dimensional margins.
 
 
-<!--   - Independence likelihood -->
-<!--   - Pairwise likelihood -->
+
+- Some history
+  - Besag (1974) introduced the idea of composite likelihood for spatial data
+  - Liang (1987) studies composite conditional likelihoods
+  - Molenberghs and Verbeke (2005) in the context of longitudinal studies
+
+
+  - Independence likelihood
+  - Pairwise likelihood
+:::::
+
+
+
 
 
 ## An analogy 
@@ -480,32 +475,6 @@ $${#eq-hessian}
 ::: 
 
 # Limited information GOF tests
-
-<!-- ## Goodness-of-fit -->
-
-<!-- ::: {.r-stack} -->
-
-<!-- ::: {.absolute left=0 top=70} -->
-
-<!-- ```{r} -->
-<!-- #| echo: false -->
-<!-- p_mult_bern_fig + -->
-<!--   ggsankey::theme_sankey() + -->
-<!--   theme( -->
-<!--     legend.position = "none", -->
-<!--     plot.margin = unit(c(-0.5,-3.2,0,-3.2), "cm") -->
-<!--   ) -->
-<!-- ``` -->
-
-<!-- ::: -->
-
-<!-- ::: {data-id="box1" .fragment .fade-out style="background: white; width: 373px; height: 700px;" .absolute left=125} -->
-<!-- ::: -->
-
-<!-- ::: {data-id="box2" style="background: white; width: 800px; height: 700px;" .absolute left=498} -->
-<!-- ::: -->
-
-<!-- ::: -->
 
 ## Goodness-of-fit
 
@@ -716,8 +685,6 @@ To use $\bOmega_2$ in practice, replace with "hat versions" of relevant matrices
 <!-- \bOmega_2 = \left( \bI - \bDelta_2\cH(\btheta)^{-1} \bB(\btheta)  \right) \bSigma_2 \left( \bI - \bDelta_2\cH(\btheta)^{-1} \bB(\btheta)  \right)^\top -->
 <!-- $$ -->
 
-
-
 ## Distribution of test statistics
 
 LIGOF test statistics generally take the quadratic form 
@@ -725,7 +692,7 @@ $$
 X^2  = n \hat\be_2^\top \hat\bXi \hat\be_2,
 $$
 where $\bXi(\hat\btheta) =: \hat\bXi \xrightarrow{\text P} \bXi$ is some $S\times S$ weight matrix. 
-Generally, $X^2$ is reffered to a chi square distribution under $H_0$, because [@mathai1992quadratic]
+Generally, $X^2$ is referred to a chi square distribution under $H_0$, because [@mathai1992quadratic]
 $$
 X^2 \xrightarrow{\text D} \sum_{s=1}^S \delta_s\chi^2_1 \quad \text{as} \quad n\to\infty,
 $$
@@ -760,8 +727,8 @@ where the $\delta_s$ are the eigenvalues of $\bM = \bOmega_2\bXi$. Two cases:
 | 2 | Wald (VCF)   | $\bXi\hat{\bOmega}_2\bXi$                 | $S-m$ |
 | 3 | Wald (Diag.) | $\diag(\hat{\bOmega}_2)^{-1}$             | est.  |
 | 4 | Pearson      | $\diag(\hat{\bpi}_2)^{-1}$               | est.  |
-| 5 | RSS          | $\mathbf I$                         | est.  |
-| 6 | Multinomial  | $\hat{\bSigma}_2^{-1}$ | est.  |
+| [5]{style="color:gray;"} | [RSS]{style="color:gray;"}          | [$\mathbf I$]{style="color:gray;"}                         | [est.]{style="color:gray;"}  |
+| [6]{style="color:gray;"} | [Multinomial]{style="color:gray;"}  | [$\hat{\bSigma}_2^{-1}$]{style="color:gray;"} | [est.]{style="color:gray;"}  |
 |   |              |                                     |       |
 
 : {.table-ubd}
@@ -773,11 +740,9 @@ where the $\delta_s$ are the eigenvalues of $\bM = \bOmega_2\bXi$. Two cases:
 1--@reiser1996analysis; 2--@maydeu2005limited; 4--@bartholomew2002goodness;<br>5,6--@maydeu2008overview.
 :::
 
-# Simulation results
+# Simulation study
 
 ## Factor models
-
-<!-- Five factor models with varying number of items and latent factors are considered. -->
 
 ::: {.panel-tabset}
 
@@ -1132,14 +1097,6 @@ pop %>%
 
 ::: {.column width=40%}
 
-<!-- | Type | $N$  | Avg. Classes | Avg. class size | -->
-<!-- |------|------|--------------|-----------------| -->
-<!-- | A    | 400  | 33.0         | 15.2            | -->
-<!-- | B    | 1000 | 19.6         | 25.7            | -->
-<!-- | C    | 600  | 24.9         | 20.4            | -->
-<!-- | -->
-<!-- : {.table-ubd} -->
-
 ```{r}
 n_schools <-
   pop |>
@@ -1191,7 +1148,7 @@ $\text{ICC} \in (0.05, 0.60)$
 
 ## Educational survey (results) 
 
-### Type I error rates (5% level, $n=5000$)
+### Type I error rates ($\alpha = 5\%$, $n=5000$)
 
 ```{r}
 #| out-width: 100%
@@ -1203,7 +1160,7 @@ p_type1
 
 ## Educational survey (results) 
 
-### Power analysis
+### Power analysis ($\alpha = 5\%$)
 
 ```{r}
 #| include: false
@@ -1215,7 +1172,7 @@ load("R/p_power.RData")
 #| out-width: 100%
 #| fig-width: 8
 #| fig-height: 4.4
-p_power1 # 
+p_power1 #
 ```
 :::
 
@@ -1232,20 +1189,21 @@ p_power2
 
 ## Conclusions
 
-- Pairwise likelihood estimation alleviates some issues associated with the UV approach for binary factor models. 
+⚡ **PML estimation** offers a *computationally efficient* alternative that mitigates some challenges inherent in the **UV approach** for binary factor models.
 
-- Sampling weights are easily incorporated in the PML estimation, and found to perform well in (limited) simulation studies.
+🧩 For samples with **unequal probability of selection**, sampling weights are **easily incorporated** in the PML estimation routine.
 
-- Sparsity impairs the dependability of GOF tests but are circumvented by considering lower order statistics. Wald, Pearson, and others are investigated across a variety of scenarios.
-  - Generally all tests have acceptable Type I errors, except WaldDiag test.
-  - Wald test needs $\bOmega_2^{-1}$, but WaldVCF does not.
-  - Pearson test has more power than the Wald-type test in more complicated scenarios.
-  - Added variability due to complex designs (expected), but overall power curves are not drastically different.
+🔍 **Sparsity impairs the *dependability* ** of GOF tests, but are circumvented by considering lower order statistics. 
+
+- ✅ Generally all tests have acceptable Type I errors, except WaldDiag test.
+- 🛠️ Wald and Pearson tests need $\hat{\bOmega}_2^{-1}$, but WaldVCF and WaldDiag do not.
+- ⚠️ Ignoring sampling weights may lead to inflated Type I errors and lower power.
+- 🏆 **Pearson test** seems the most robust. 
 
 ## Software
 
 ::: {.nudge-up-small}
-R software implementation in `{lavaan}` 0.6-17 (PML weights) and a separate package `{lavaan.bingof}` for the LIGOF tests.
+R software implementation in `{lavaan} (>= 0.6-17)` to carry out weighted PML, and separately in `{lavaan.bingof}` for the LIGOF tests.
 
 ```{r}
 #| include: false
@@ -1272,6 +1230,6 @@ lavaan.bingof::all_tests(fit)
 
 # Thanks! {.transition-slide-ubdblue}
 
-[`https://haziqj.ml/plgof-gent`](https://haziqj.ml/plgof-gent)
+[`https://haziqj.ml/plgof-nus`](https://haziqj.ml/plgof-nus)
 
 ## References {.appendix}

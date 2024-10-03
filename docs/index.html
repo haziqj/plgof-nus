@@ -479,7 +479,7 @@ Haziq Jamil <a href="https://orcid.org/0000-0003-3298-1010" class="quarto-title-
 </div>
 </div>
 <div class="columns">
-<!-- ::: {.column width="12.5%"} --><!-- ::: --><div class="column" style="width:33.3%;">
+<div class="column" style="width:33.3%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figures/eg1a.jpg"></p>
@@ -1164,13 +1164,11 @@ y_i = \begin{cases}
 \tag{5}\]</span></span> where <span class="math inline">\(\pi_r({\boldsymbol\theta}) = \int_{{\mathcal C}_r} \phi_p({\mathbf y}^* \mid {\mathbf 0}, {\boldsymbol\Lambda}{\boldsymbol\Psi}{\boldsymbol\Lambda}^\top + {\boldsymbol\Theta}_\epsilon) \mathop{\mathrm{d}}\hspace{0.5pt}\!{\mathbf y}^*\)</span>.</li>
 </ul>
 </div>
-<!-- ::: {.fragment fragment-index=2} -->
 <div class="fragment fade-in absolute" style="top: 643px; ">
 <ul>
 <li>FIML may be difficult (high-dimensional integral; perfect separation).</li>
 </ul>
 </div>
-<!-- ::: -->
 </div></div>
 </section>
 <section id="composite-likelihood" class="slide level2">
@@ -1191,20 +1189,38 @@ y_i = \begin{cases}
 </ul>
 </div>
 </div>
-<!-- - Composite likelihood is an inference function derived by multiplying a collection of component likelihoods -->
-<!-- - Because each individual component is a conditional or marginal density, the resulting estimating equation obtained from the derivative of the composite log-likelihood is an unbiased estimating equation -->
-<!-- - Because the components are multiplied, whether or not they are independent, the inference function has the properties of likelihood from a misspeciﬁed model -->
-<!-- - Terminology -->
-<!--   - Pseudo-likelihood: Function of parameter and data that behaves in "some respect" as a likelihood -->
-<!--   - Composite likelihood: An example of pseudo-likelihood, based on terms that are marginal or conditional densities -->
-<!--   - Quasi-likelihood: Wedderburn's likelihood which is not a pdf or misspecified likelihoods -->
-<!--   - Limited information methods: Inference procedures based on low-dimensional margins. -->
-<!-- - Some history -->
-<!--   - Besag (1974) introduced the idea of composite likelihood for spatial data -->
-<!--   - Liang (1987) studies composite conditional likelihoods -->
-<!--   - Molenberghs and Verbeke (2005) in the context of longitudinal studies -->
-<!--   - Independence likelihood -->
-<!--   - Pairwise likelihood -->
+<aside class="notes">
+<ul>
+<li><p>Composite likelihood is an inference function derived by multiplying a collection of component likelihoods</p></li>
+<li><p>Because each individual component is a conditional or marginal density, the resulting estimating equation obtained from the derivative of the composite log-likelihood is an unbiased estimating equation</p></li>
+<li><p>Because the components are multiplied, whether or not they are independent, the inference function has the properties of likelihood from a misspeciﬁed model</p></li>
+<li><p>Terminology</p>
+<ul>
+<li>Pseudo-likelihood: Function of parameter and data that behaves in “some respect” as a likelihood</li>
+<li>Composite likelihood: An example of pseudo-likelihood, based on terms that are marginal or conditional densities</li>
+<li>Quasi-likelihood: Wedderburn’s likelihood which is not a pdf or misspecified likelihoods</li>
+<li>Limited information methods: Inference procedures based on low-dimensional margins.</li>
+</ul></li>
+<li><p>Some history</p>
+<ul>
+<li><p>Besag (1974) introduced the idea of composite likelihood for spatial data</p></li>
+<li><p>Liang (1987) studies composite conditional likelihoods</p></li>
+<li><p>Molenberghs and Verbeke (2005) in the context of longitudinal studies</p></li>
+<li><p>Independence likelihood</p></li>
+<li><p>Pairwise likelihood</p></li>
+</ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="an-analogy" class="slide level2">
 <h2>An analogy</h2>
@@ -1288,24 +1304,7 @@ y_i = \begin{cases}
 <section>
 <section id="limited-information-gof-tests" class="title-slide slide level1 center">
 <h1>Limited information GOF tests</h1>
-<!-- ## Goodness-of-fit -->
-<!-- ::: {.r-stack} -->
-<!-- ::: {.absolute left=0 top=70} -->
-<!-- ```{r} -->
-<!-- #| echo: false -->
-<!-- p_mult_bern_fig + -->
-<!--   ggsankey::theme_sankey() + -->
-<!--   theme( -->
-<!--     legend.position = "none", -->
-<!--     plot.margin = unit(c(-0.5,-3.2,0,-3.2), "cm") -->
-<!--   ) -->
-<!-- ``` -->
-<!-- ::: -->
-<!-- ::: {data-id="box1" .fragment .fade-out style="background: white; width: 373px; height: 700px;" .absolute left=125} -->
-<!-- ::: -->
-<!-- ::: {data-id="box2" style="background: white; width: 800px; height: 700px;" .absolute left=498} -->
-<!-- ::: -->
-<!-- ::: -->
+
 </section>
 <section id="goodness-of-fit" class="slide level2">
 <h2>Goodness-of-fit</h2>
@@ -1525,7 +1524,7 @@ S=p + p(p-1)/2 \ll R.
 <h2>Distribution of test statistics</h2>
 <p>LIGOF test statistics generally take the quadratic form <span class="math display">\[
 X^2  = n \hat{\mathbf e}_2^\top \hat{\boldsymbol\Xi}\hat{\mathbf e}_2,
-\]</span> where <span class="math inline">\({\boldsymbol\Xi}(\hat{\boldsymbol\theta}) =: \hat{\boldsymbol\Xi}\xrightarrow{\text P} {\boldsymbol\Xi}\)</span> is some <span class="math inline">\(S\times S\)</span> weight matrix. Generally, <span class="math inline">\(X^2\)</span> is reffered to a chi square distribution under <span class="math inline">\(H_0\)</span>, because <span class="citation" data-cites="mathai1992quadratic">(<a href="#/references" role="doc-biblioref" onclick="">Mathai &amp; Provost, 1992</a>)</span> <span class="math display">\[
+\]</span> where <span class="math inline">\({\boldsymbol\Xi}(\hat{\boldsymbol\theta}) =: \hat{\boldsymbol\Xi}\xrightarrow{\text P} {\boldsymbol\Xi}\)</span> is some <span class="math inline">\(S\times S\)</span> weight matrix. Generally, <span class="math inline">\(X^2\)</span> is referred to a chi square distribution under <span class="math inline">\(H_0\)</span>, because <span class="citation" data-cites="mathai1992quadratic">(<a href="#/references" role="doc-biblioref" onclick="">Mathai &amp; Provost, 1992</a>)</span> <span class="math display">\[
 X^2 \xrightarrow{\text D} \sum_{s=1}^S \delta_s\chi^2_1 \quad \text{as} \quad n\to\infty,
 \]</span> where the <span class="math inline">\(\delta_s\)</span> are the eigenvalues of <span class="math inline">\({\mathbf M}= {\boldsymbol\Omega}_2{\boldsymbol\Xi}\)</span>. Two cases:</p>
 <ol type="1">
@@ -1553,6 +1552,12 @@ X^2 \xrightarrow{\text D} \sum_{s=1}^S \delta_s\chi^2_1 \quad \text{as} \quad n\
 </div><div class="column" style="width:59%;">
 <p><br></p>
 <table class="table-ubd caption-top">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 22%">
+<col style="width: 60%">
+<col style="width: 11%">
+</colgroup>
 <thead>
 <tr class="header">
 <th></th>
@@ -1587,16 +1592,16 @@ X^2 \xrightarrow{\text D} \sum_{s=1}^S \delta_s\chi^2_1 \quad \text{as} \quad n\
 <td>est.</td>
 </tr>
 <tr class="odd">
-<td>5</td>
-<td>RSS</td>
-<td><span class="math inline">\(\mathbf I\)</span></td>
-<td>est.</td>
+<td><span style="color:gray;">5</span></td>
+<td><span style="color:gray;">RSS</span></td>
+<td><span style="color:gray;"><span class="math inline">\(\mathbf I\)</span></span></td>
+<td><span style="color:gray;">est.</span></td>
 </tr>
 <tr class="even">
-<td>6</td>
-<td>Multinomial</td>
-<td><span class="math inline">\(\hat{{\boldsymbol\Sigma}}_2^{-1}\)</span></td>
-<td>est.</td>
+<td><span style="color:gray;">6</span></td>
+<td><span style="color:gray;">Multinomial</span></td>
+<td><span style="color:gray;"><span class="math inline">\(\hat{{\boldsymbol\Sigma}}_2^{-1}\)</span></span></td>
+<td><span style="color:gray;">est.</span></td>
 </tr>
 <tr class="odd">
 <td></td>
@@ -1612,13 +1617,12 @@ X^2 \xrightarrow{\text D} \sum_{s=1}^S \delta_s\chi^2_1 \quad \text{as} \quad n\
 <p>1–<span class="citation" data-cites="reiser1996analysis">Reiser (<a href="#/references" role="doc-biblioref" onclick="">1996</a>)</span>; 2–<span class="citation" data-cites="maydeu2005limited">Maydeu-Olivares &amp; Joe (<a href="#/references" role="doc-biblioref" onclick="">2005</a>)</span>; 4–<span class="citation" data-cites="bartholomew2002goodness">Bartholomew &amp; Leung (<a href="#/references" role="doc-biblioref" onclick="">2002</a>)</span>;<br>5,6–<span class="citation" data-cites="maydeu2008overview">Maydeu-Olivares &amp; Joe (<a href="#/references" role="doc-biblioref" onclick="">2008</a>)</span>.</p>
 </div></aside></section></section>
 <section>
-<section id="simulation-results" class="title-slide slide level1 center">
-<h1>Simulation results</h1>
+<section id="simulation-study" class="title-slide slide level1 center">
+<h1>Simulation study</h1>
 
 </section>
 <section id="factor-models" class="slide level2">
 <h2>Factor models</h2>
-<!-- Five factor models with varying number of items and latent factors are considered. -->
 <div class="panel-tabset">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">M1: <code>1F5V</code></a></li><li><a href="#tabset-1-2">M2: <code>1F8V</code></a></li><li><a href="#tabset-1-3">M3: <code>1F15V</code></a></li><li><a href="#tabset-1-4">M4: <code>2F10V</code></a></li><li><a href="#tabset-1-5">M5: <code>3F15V</code></a></li></ul>
 <div class="tab-content">
@@ -3224,13 +3228,6 @@ w_h^{-1} = \frac{1}{1 + \exp(y_1^*)}.
 </div>
 </div>
 </div><div class="column" style="width:40%;">
-<!-- | Type | $N$  | Avg. Classes | Avg. class size | -->
-<!-- |------|------|--------------|-----------------| -->
-<!-- | A    | 400  | 33.0         | 15.2            | -->
-<!-- | B    | 1000 | 19.6         | 25.7            | -->
-<!-- | C    | 600  | 24.9         | 20.4            | -->
-<!-- | -->
-<!-- : {.table-ubd} -->
 <div class="cell">
 <div class="cell-output-display">
 <div id="jfrmurgdrx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -3724,7 +3721,7 @@ w_h^{-1} = \frac{1}{1 + \exp(y_1^*)}.
 </section>
 <section id="educational-survey-results" class="slide level2">
 <h2>Educational survey (results)</h2>
-<h3 id="type-i-error-rates-5-level-n5000">Type I error rates (5% level, <span class="math inline">\(n=5000\)</span>)</h3>
+<h3 id="type-i-error-rates-alpha-5-n5000">Type I error rates (<span class="math inline">\(\alpha = 5\%\)</span>, <span class="math inline">\(n=5000\)</span>)</h3>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -3737,7 +3734,7 @@ w_h^{-1} = \frac{1}{1 + \exp(y_1^*)}.
 </section>
 <section id="educational-survey-results-1" class="slide level2">
 <h2>Educational survey (results)</h2>
-<h3 id="power-analysis">Power analysis</h3>
+<h3 id="power-analysis-alpha-5">Power analysis (<span class="math inline">\(\alpha = 5\%\)</span>)</h3>
 <div class="absolute fragment fade-out" data-fragment-index="1" style="top: 95px; left: 0px; ">
 <div class="cell">
 <div class="cell-output-display">
@@ -3768,22 +3765,20 @@ w_h^{-1} = \frac{1}{1 + \exp(y_1^*)}.
 </section>
 <section id="conclusions" class="slide level2">
 <h2>Conclusions</h2>
+<p>⚡ <strong>PML estimation</strong> offers a <em>computationally efficient</em> alternative that mitigates some challenges inherent in the <strong>UV approach</strong> for binary factor models.</p>
+<p>🧩 For samples with <strong>unequal probability of selection</strong>, sampling weights are <strong>easily incorporated</strong> in the PML estimation routine.</p>
+<p>🔍 <strong>Sparsity impairs the <em>dependability</em> </strong> of GOF tests, but are circumvented by considering lower order statistics.</p>
 <ul>
-<li><p>Pairwise likelihood estimation alleviates some issues associated with the UV approach for binary factor models.</p></li>
-<li><p>Sampling weights are easily incorporated in the PML estimation, and found to perform well in (limited) simulation studies.</p></li>
-<li><p>Sparsity impairs the dependability of GOF tests but are circumvented by considering lower order statistics. Wald, Pearson, and others are investigated across a variety of scenarios.</p>
-<ul>
-<li>Generally all tests have acceptable Type I errors, except WaldDiag test.</li>
-<li>Wald test needs <span class="math inline">\({\boldsymbol\Omega}_2^{-1}\)</span>, but WaldVCF does not.</li>
-<li>Pearson test has more power than the Wald-type test in more complicated scenarios.</li>
-<li>Added variability due to complex designs (expected), but overall power curves are not drastically different.</li>
-</ul></li>
+<li>✅ Generally all tests have acceptable Type I errors, except WaldDiag test.</li>
+<li>🛠️ Wald and Pearson tests need <span class="math inline">\(\hat{{\boldsymbol\Omega}}_2^{-1}\)</span>, but WaldVCF and WaldDiag do not.</li>
+<li>⚠️ Ignoring sampling weights may lead to inflated Type I errors and lower power.</li>
+<li>🏆 <strong>Pearson test</strong> seems the most robust.</li>
 </ul>
 </section>
 <section id="software" class="slide level2">
 <h2>Software</h2>
 <div class="nudge-up-small">
-<p>R software implementation in <code>{lavaan}</code> 0.6-17 (PML weights) and a separate package <code>{lavaan.bingof}</code> for the LIGOF tests.</p>
+<p>R software implementation in <code>{lavaan} (&gt;= 0.6-17)</code> to carry out weighted PML, and separately in <code>{lavaan.bingof}</code> for the LIGOF tests.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6" data-code-line-numbers="|5,6|8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>fit <span class="ot">&lt;-</span> lavaan<span class="sc">::</span><span class="fu">sem</span>(</span>
 <span id="cb6-2"><a href=""></a>  <span class="at">model =</span> <span class="st">"eta1 =~ y1 + y2 + y3 + y4 + y5"</span>,</span>
@@ -3797,12 +3792,12 @@ w_h^{-1} = \frac{1}{1 + \exp(y_1^*)}.
 <pre><code># A tibble: 6 × 6
      X2    df name          pval Xi_rank     S
   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;   &lt;int&gt; &lt;int&gt;
-1 1.71   5    Wald         0.887      13    15
-2 1.70   5    WaldVCF      0.889       5    15
-3 0.829  3.42 WaldDiag,MM3 0.890      15    15
-4 1.17   3.43 Pearson,MM3  0.823      15    15
-5 1.41   4.07 RSS,MM3      0.851      15    15
-6 1.17   3.43 Multn,MM3    0.823      15    15</code></pre>
+1  7.05  5    Wald         0.217      14    15
+2  6.71  5    WaldVCF      0.243       5    15
+3  3.39  3.08 WaldDiag,MM3 0.348      15    15
+4  3.26  3.24 Pearson,MM3  0.394      15    15
+5  3.79  3.89 RSS,MM3      0.419      15    15
+6  3.26  3.24 Multn,MM3    0.393      15    15</code></pre>
 </div>
 </div>
 </div>
@@ -3813,7 +3808,7 @@ w_h^{-1} = \frac{1}{1 + \exp(y_1^*)}.
 <section>
 <section id="thanks" class="title-slide slide level1 transition-slide-ubdblue center">
 <h1>Thanks!</h1>
-<p><a href="https://haziqj.ml/plgof-gent"><code>https://haziqj.ml/plgof-gent</code></a></p>
+<p><a href="https://haziqj.ml/plgof-nus"><code>https://haziqj.ml/plgof-nus</code></a></p>
 </section>
 <section id="references" class="slide level2 appendix smaller scrollable">
 <h2>References</h2>

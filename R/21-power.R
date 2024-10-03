@@ -25,6 +25,7 @@ p_power1 <-
     n <= 5000
   ) |>
   mutate(
+    name = fct_relabel(name, \(x) gsub(",MM3", "", x)),
     sampling = fct_relevel(sampling, "SRS", "Cluster", "Cluster (ignore wt)", 
                            "Strat-clust", "Strat-clust (ignore wt)"),
     sampling = fct_recode(sampling, "Cluster\n(no wt)" = "Cluster (ignore wt)", 
@@ -32,7 +33,7 @@ p_power1 <-
     # name = fct_rev(name)
   ) |> 
   ggplot(aes(n, rej_rate, col = sampling, linetype = sampling)) +
-  geom_line(linewidth = 0.8) +
+  geom_line(linewidth = 0.6) +
   facet_grid(name ~ sim) +
   theme_bw() +
   scale_y_continuous(labels = scales::percent) +
@@ -59,6 +60,7 @@ p_power2 <-
     n <= 5000
   ) |>
   mutate(
+    name = fct_relabel(name, \(x) gsub(",MM3", "", x)),
     sampling = fct_relevel(sampling, "SRS", "Cluster", "Cluster (ignore wt)",
                            "Strat-clust", "Strat-clust (ignore wt)")
   ) |>
@@ -68,7 +70,7 @@ p_power2 <-
   theme_bw() +
   scale_y_continuous(labels = scales::percent) +
   scale_colour_manual(values = ggsci::pal_d3()(4)) +
-  scale_linewidth_manual(values = c(0.8, 0.8, 0.8, 1.1)) +
+  scale_linewidth_manual(values = c(0.6, 0.6, 0.6, 1.1)) +
   scale_alpha_manual(values = c(0.6, 0.6, 0.6, 1)) +
   labs(y = NULL, x = "Sample size (n)", col = NULL, alpha = NULL, linewidth = NULL) +
   theme(legend.position = "top"); p_power2

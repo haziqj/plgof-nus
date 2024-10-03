@@ -19,6 +19,7 @@ p_type1 <-
     n == 5000
   ) |>
   mutate(
+    name = fct_relabel(name, \(x) gsub(",MM3", "", x)),
     sampling = fct_relevel(sampling, "SRS", "Cluster", "Cluster (ignore wt)", 
                        "Strat-clust", "Strat-clust (ignore wt)"),
     sampling = fct_recode(sampling, "Cluster\n(no wt)" = "Cluster (ignore wt)", 
