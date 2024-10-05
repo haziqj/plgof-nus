@@ -21,6 +21,10 @@ library(gt)
 library(tidyverse)
 library(Matrix)
 load("R/p_mult_bern_fig.RData")
+ubdblue <- "#325494"
+ubdteal <- "#58DDB3"
+ubdyellow <- "#F5C946"
+ubdred <- "#B10F2E"
 ```
 
 
@@ -984,7 +988,7 @@ Larger values of $y_1^*$ result in smaller probabilities of selection.
 
 ## Informative sampling (results) {.scrollable}
 
-### Bias
+### Relative mean bias
 
 ```{r}
 load("R/sims_uneq_samp_mod5.Rdata")
@@ -996,7 +1000,7 @@ tab_bias_gt$`_data`$PML_5000a <- abs(tab_bias_gt$`_data`$PML_5000)
 tab_bias_gt$`_data`$PMLW_5000a <- abs(tab_bias_gt$`_data`$PMLW_5000)
 
 tab_bias_gt |>
-  fmt_number(columns = -"truth", decimals = 2) |>
+  # fmt_number(columns = -"truth", decimals = 2) |>
   tab_options(
     table.font.size = "22px",
     # table.layout = "auto",
@@ -1005,10 +1009,11 @@ tab_bias_gt |>
   data_color(
     columns = c("PML_500a", "PMLW_500a", "PML_1000a", "PMLW_1000a", "PML_5000a", "PMLW_5000a"),
     target_columns = c("PML_500", "PMLW_500", "PML_1000", "PMLW_1000", "PML_5000", "PMLW_5000"),
-    method = "numeric",
-    palette = "plasma",
-    domain = c(0, 0.32),
-    alpha = 0.9
+    method = "bin",
+    bins = c(0, 1, 2.5, 5, 10, 20, 30, 40, 50) / 100,
+    palette = "inferno",
+    # domain = c(0, 0.32),
+    alpha = 0.8
   ) |>
   cols_width(
     3:8 ~ px(120)
@@ -1027,33 +1032,35 @@ tab_se_gt$`_data`$cov_PMLW_1000a <- abs(tab_se_gt$`_data`$cov_PMLW_1000 - 0.95)
 tab_se_gt$`_data`$cov_PML_5000a <- abs(tab_se_gt$`_data`$cov_PML_5000 - 0.95)
 tab_se_gt$`_data`$cov_PMLW_5000a <- abs(tab_se_gt$`_data`$cov_PMLW_5000 - 0.95)
 
-tab_se_gt$`_data`$ratio_PML_500a <- log(tab_se_gt$`_data`$ratio_PML_500) |> abs()
-tab_se_gt$`_data`$ratio_PMLW_500a <- log(tab_se_gt$`_data`$ratio_PMLW_500) |> abs()
-tab_se_gt$`_data`$ratio_PML_1000a <- log(tab_se_gt$`_data`$ratio_PML_1000) |> abs()
-tab_se_gt$`_data`$ratio_PMLW_1000a <- log(tab_se_gt$`_data`$ratio_PMLW_1000) |> abs()
-tab_se_gt$`_data`$ratio_PML_5000a <- log(tab_se_gt$`_data`$ratio_PML_5000) |> abs()
-tab_se_gt$`_data`$ratio_PML_5000a[1:5] <- tab_se_gt$`_data`$ratio_PML_5000a[1:5] + 0.8
+tab_se_gt$`_data`$ratio_PML_500a <- abs(tab_se_gt$`_data`$ratio_PML_500 - 1)
+tab_se_gt$`_data`$ratio_PMLW_500a <- abs(tab_se_gt$`_data`$ratio_PMLW_500 - 1)
+tab_se_gt$`_data`$ratio_PML_1000a <- abs(tab_se_gt$`_data`$ratio_PML_1000 - 1)
+tab_se_gt$`_data`$ratio_PMLW_1000a <- abs(tab_se_gt$`_data`$ratio_PMLW_1000 - 1)
+tab_se_gt$`_data`$ratio_PML_5000a <- abs(tab_se_gt$`_data`$ratio_PML_5000 - 1)
+# tab_se_gt$`_data`$ratio_PML_5000a[1:5] <- tab_se_gt$`_data`$ratio_PML_5000a[1:5] + 0.8
 tab_se_gt$`_data`$ratio_PMLW_5000a <- log(tab_se_gt$`_data`$ratio_PMLW_5000) |> abs()
 
 tab_se_gt |>
   tab_options(
     table.font.size = "22px"
   ) |>
+  # Colour for coverage
   data_color(
     columns = c("cov_PML_500a", "cov_PMLW_500a", "cov_PML_1000a", "cov_PMLW_1000a", "cov_PML_5000a", "cov_PMLW_5000a"),
     target_columns = c("cov_PML_500", "cov_PMLW_500", "cov_PML_1000", "cov_PMLW_1000", "cov_PML_5000", "cov_PMLW_5000"),
-    method = "numeric",
-    palette = "plasma",
-    domain = c(0, 0.95),
-    alpha = 0.9
+    method = "bin",
+    bins = c(0, 1, 2.5, 5, 10, 25, 50, 100) / 100,
+    palette = "inferno",
+    alpha = 0.8
   ) |>
+  # Colour for SD/SE ratio
   data_color(
     columns = c("ratio_PML_500a", "ratio_PMLW_500a", "ratio_PML_1000a", "ratio_PMLW_1000a", "ratio_PML_5000a", "ratio_PMLW_5000a"),
     target_columns = c("ratio_PML_500", "ratio_PMLW_500", "ratio_PML_1000", "ratio_PMLW_1000", "ratio_PML_5000", "ratio_PMLW_5000"),
-    method = "numeric",
-    palette = "plasma",
-    domain = c(0, 2.65),
-    alpha = 0.9
+    method = "bin",
+    bins = c(0, 0.05, 0.1, 0.25, 0.5, 1, 2, 5),
+    palette = "inferno",
+    alpha = 0.8
   )
 ```
 
@@ -1146,6 +1153,34 @@ $\text{ICC} \in (0.05, 0.60)$
 
 :::
 
+## Educational survey sampling weights
+
+```{r}
+#| out-width: 100%
+#| fig-width: 8
+#| fig-height: 4.6
+pop <- make_population(model_no = 1, seed = 123)
+dat1 <- gen_data_bin_srs(pop) |> mutate(wt = 1, method = "SRS")
+dat2 <- gen_data_bin_clust(pop) |> mutate(method = "Clust")
+dat3 <- gen_data_bin_strcl(pop) |> mutate(method = "Strat-clust")
+
+bind_rows(dat1, dat2, dat3) |>
+  group_by(method) |>
+  mutate(
+    student = row_number(),
+    method = factor(method, levels = c("SRS", "Clust", "Strat-clust"))
+    # school = sample(as.numeric(fct_shuffle(factor(school))))
+  ) |>
+  ggplot(aes(student, col = type)) +
+  geom_point(aes(y = wt, shape = type)) +
+  facet_grid(method ~ .) +
+  scale_colour_manual(values = c("#DE1A1A", "#29BF12", "#00A5CF")) +
+  theme_bw() +
+  labs(x = "Student index", y = "Sampling weight", col = "School\ntype", shape = "School\ntype") +
+  scale_y_continuous(breaks = seq(0, 2, by = 0.25))
+```
+
+
 ## Educational survey (results) 
 
 ### Type I error rates ($\alpha = 5\%$, $n=5000$)
@@ -1153,7 +1188,7 @@ $\text{ICC} \in (0.05, 0.60)$
 ```{r}
 #| out-width: 100%
 #| fig-width: 8
-#| fig-height: 4.4
+#| fig-height: 4.5
 load("R/p_type1.Rdata")
 p_type1
 ```
@@ -1171,7 +1206,7 @@ load("R/p_power.RData")
 ```{r}
 #| out-width: 100%
 #| fig-width: 8
-#| fig-height: 4.4
+#| fig-height: 4.5
 p_power1 #
 ```
 :::
@@ -1180,7 +1215,7 @@ p_power1 #
 ```{r}
 #| out-width: 100%
 #| fig-width: 8
-#| fig-height: 4.4
+#| fig-height: 4.5
 p_power2
 ```
 :::
