@@ -54,7 +54,9 @@ cat(readr::read_file("maths_shortcuts.tex"))
 
 ::: {.nudge-up-xl}
 
-> **Jamil, H.**, Moustaki, I., & Skinner, C. (2024). Pairwise likelihood estimation and limited information goodness-of-fit test statistics for binary factor analysis models under complex survey sampling. *Br. J. Math. Stat. Psychol., In Press* [arXiv.2311.02543](https://doi.org/10.48550/arXiv.2311.02543). URL: [`https://haziqj.ml/plgof-nus/`](https://haziqj.ml/plgof-nus/)
+> **Jamil, H.**, Moustaki, I., & Skinner, C. (2024). Pairwise likelihood estimation and limited information goodness-of-fit test statistics for binary factor analysis models under complex survey sampling. *Br. J. Math. Stat. Psychol.* Advance online publication. [https://doi.org/10.1111/bmsp.12358](https://doi.org/10.1111/bmsp.12358)
+
+<!-- URL: [`https://haziqj.ml/plgof-nus/`](https://haziqj.ml/plgof-nus/) -->
 
 :::
 
